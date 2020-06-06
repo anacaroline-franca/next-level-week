@@ -37,6 +37,7 @@ const CreatePoint = () => {
 
   const [selectedUf, setSelectedUf] = useState("0");
   const [selectedCity, setSelectedCity] = useState("0");
+  const [selectedItens, setSelectedItens] = useState<number[]>([]);
   const [selectedPosition, setSelectedPosition] = useState<[number, number]>([0, 0]);
 
   function handleSelectUf(event: ChangeEvent<HTMLSelectElement>) {
@@ -62,6 +63,17 @@ const CreatePoint = () => {
     const { name, value } = event.target;
 
     setFormData({ ...formData, [name]: value });
+  }
+
+  function handleSelectItem(id: number) {
+    const alreadySelected = selectedItens.findIndex(item => item === id);
+
+    if (alreadySelected >= 0) {
+      const filteredItens = selectedItens.filter(item => item !== id);
+      setSelectedItens(filteredItens);
+    } else {
+      setSelectedItens([...selectedItens, id]);
+    }
   }
 
   useEffect(() => {
@@ -202,7 +214,11 @@ const CreatePoint = () => {
           </legend>
           <ul className="items-grid">
             {items.map(item => (
-              <li key={item.id}>
+              <li
+                key={item.id}
+                onClick={() => handleSelectItem(item.id)}
+                className={selectedItens.includes(item.id) ? "selected" : ""}
+              >
                 <img src={item.image_url} alt={item.title} />
                 <span>{item.title}</span>
               </li>
