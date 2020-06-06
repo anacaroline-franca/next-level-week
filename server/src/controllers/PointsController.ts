@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import knex from "../database/connection";
 
+const DEFAULT_IMAGE_URL = "https://images.unsplash.com/photo-1503596476-1c12a8ba09a9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60";
+
 class PointsController {
   async create(request: Request, response: Response) {
     const {
@@ -17,7 +19,7 @@ class PointsController {
     const trx = await knex.transaction();
 
     const point = {
-      image: 'image-fake',
+      image: DEFAULT_IMAGE_URL,
       name,
       email,
       whatsapp,
