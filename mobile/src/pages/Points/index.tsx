@@ -1,8 +1,19 @@
+import React from "react";
+import { View, ImageBackground, Image, StyleSheet, Text } from "react-native";
+
+const Points = () => {
+  return (
+    <View>
+
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 32,
-    paddingTop: 20 + Constants.statusBarHeight,
+    // paddingTop: 20 + Constants.statusBarHeight,
   },
 
   title: {
@@ -33,7 +44,7 @@ const styles = StyleSheet.create({
 
   mapMarker: {
     width: 90,
-    height: 80, 
+    height: 80,
   },
 
   mapMarkerContainer: {
@@ -94,3 +105,5 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
 });
+
+export default Points;
