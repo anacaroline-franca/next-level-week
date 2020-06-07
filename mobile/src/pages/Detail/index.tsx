@@ -1,15 +1,50 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Image, StyleSheet, Text, TouchableOpacity, SafeAreaView } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { RectButton } from "react-native-gesture-handler";
 import { Feather as Icon, FontAwesome } from "@expo/vector-icons";
 import Constants from "expo-constants";
+import api from "../../services/api";
 
+interface Params {
+  point_id: number;
+}
+interface Data {
+  point: {
+    name: string;
+    image: string;
+    email: string;
+    whatsapp: string;
+    city: string;
+    uf: string;
+  };
+  items: {
+    title: string;
+  }[]
+};
 const Detail = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+
+  const [data, setData] = useState<Data>({} as Data);
+
+  const routeParams = route.params as Params;
 
   function goBack() {
     navigation.goBack();
+  }
+
+  useEffect(() => {
+    console.log("TESTEEEE", routeParams.point_id)
+    api.get(`points/${routeParams.point_id}`)
+      .then(response => {
+        console.log(response)
+        setData(response.data)
+      });
+  }, []);
+
+  if (!data.point) {
+    return null;
   }
 
   return (
@@ -19,14 +54,16 @@ const Detail = () => {
           <Icon name="arrow-left" size={20} color="#34cb79" />
         </TouchableOpacity>
 
-        <Image style={styles.pointImage} source={{ uri: "https://images.unsplash.com/photo-1503596476-1c12a8ba09a9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60" }} />
+        <Image style={styles.pointImage} source={{ uri: data.point.image }} />
 
-        <Text style={styles.pointName}>Mercado Example</Text>
-        <Text style={styles.pointItems}>Lampadas, oleo de cozinha</Text>
+        <Text style={styles.pointName}>{data.point.name}</Text>
+        <Text style={styles.pointItems}>
+          {data.items.map(item => item.title).join(", ")}
+        </Text>
 
         <View style={styles.address}>
           <Text style={styles.addressTitle}>Endereço</Text>
-          <Text style={styles.addressContent}>São Paulo, SP</Text>
+          <Text style={styles.addressContent}>{data.point.city}, {data.point.uf}</Text>
         </View>
       </View>
 
