@@ -8,6 +8,7 @@ import axios from "axios";
 import "./styles.css";
 import logo from "../../assets/logo.svg";
 import api from "../../services/api";
+import Dropzone from "../../components/dropzone";
 
 interface Item {
   id: number;
@@ -39,6 +40,7 @@ const CreatePoint = () => {
   const [selectedCity, setSelectedCity] = useState("0");
   const [selectedItens, setSelectedItens] = useState<number[]>([]);
   const [selectedPosition, setSelectedPosition] = useState<[number, number]>([0, 0]);
+  const [selectedFile, setSelectedFile] = useState<File>();
 
   const history = useHistory();
 
@@ -87,8 +89,19 @@ const CreatePoint = () => {
     const uf = selectedUf;
     const items = selectedItens;
 
-    const data = {
-      name, email, whatsapp, latitude, longitude, uf, city, items
+    const data = new FormData();
+
+    data.append("name", name);
+    data.append("email", email);
+    data.append("whatsapp", whatsapp);
+    data.append("latitude", String(latitude));
+    data.append("longitude", String(longitude));
+    data.append("uf", uf);
+    data.append("city", city);
+    data.append("items", items.join(","));
+
+    if (selectedFile) {
+      data.append("image", selectedFile);
     }
 
     await api.post("points", data);
@@ -143,6 +156,8 @@ const CreatePoint = () => {
 
       <form onSubmit={handleSubmit}>
         <h1>Cadastro do <br /> ponto de coleta</h1>
+
+        <Dropzone onFileUploaded={setSelectedFile} />
 
         <fieldset>
           <legend>
